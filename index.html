@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PRO PROJECT</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #ffffff 0%, #e3f2fd 40%, #bbdefb 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ========== LOGIN SCREEN ========== */
+        #loginScreen {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .login-box {
+            background: #fff;
+            padding: 40px 35px;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(21, 101, 192, 0.2);
+            width: 100%;
+            max-width: 380px;
+            text-align: center;
+        }
+
+        .login-box h2 {
+            color: #0d47a1;
+            margin-bottom: 8px;
+            font-size: 26px;
+        }
+
+        .login-box p {
+            color: #607d8b;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+
+        .login-box input {
+            width: 100%;
+            padding: 13px 16px;
+            margin-bottom: 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 15px;
+            outline: none;
+            transition: border 0.2s;
+        }
+
+        .login-box input:focus {
+            border-color: #1976d2;
+        }
+
+        .login-box button {
+            width: 100%;
+            padding: 14px;
+            background: #1565c0;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .login-box button:hover {
+            background: #0d47a1;
+        }
+
+        .error-msg {
+            color: #d32f2f;
+            font-size: 14px;
+            margin-top: 12px;
+            display: none;
+        }
+
+        /* ========== HEADER ========== */
+        header {
+            display: none;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 24px;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .pro-badge {
+            width: 42px;
+            height: 42px;
+            border: 2px solid #9e9e9e;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 14px;
+            color: #1565c0;
+            background: #fff;
+        }
+
+        .project-text {
+            font-size: 20px;
+            font-weight: 700;
+            color: #0d47a1;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .role-badge {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+            border: 1.5px solid;
+            display: none;
+        }
+
+        .role-free {
+            color: #757575;
+            border-color: #bdbdbd;
+            background: #f5f5f5;
+        }
+
+        .role-admin {
+            color: #d32f2f;
+            border-color: #ef9a9a;
+            background: #ffebee;
+        }
+
+        .role-onlyadmin {
+            color: #c62828;
+            border-color: #e57373;
+            background: #ffcdd2;
+        }
+
+        .menu-wrapper {
+            position: relative;
+        }
+
+        .hamburger {
+            width: 42px;
+            height: 42px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+            border-radius: 8px;
+        }
+
+        .hamburger:hover {
+            background: rgba(21, 101, 192, 0.1);
+        }
+
+        .hamburger span {
+            display: block;
+            width: 24px;
+            height: 3px;
+            background: #1565c0;
+            border-radius: 3px;
+        }
+
+        .dropdown {
+            position: absolute;
+            top: 50px;
+            right: 0;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+            min-width: 200px;
+            overflow: hidden;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.25s ease;
+            z-index: 1001;
+        }
+
+        .dropdown.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown button {
+            width: 100%;
+            padding: 14px 20px;
+            border: none;
+            background: none;
+            text-align: left;
+            font-size: 15px;
+            font-weight: 600;
+            color: #1565c0;
+            cursor: pointer;
+        }
+
+        .dropdown button:hover {
+            background: #e3f2fd;
+        }
+
+        .dropdown button:not(:last-child) {
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .dropdown .logout-btn {
+            color: #d32f2f !important;
+        }
+
+        /* ========== MAIN CONTENT ========== */
+        #mainContent {
+            display: none;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .welcome {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .welcome h1 {
+            font-size: 28px;
+            color: #0d47a1;
+            margin-bottom: 8px;
+        }
+
+        .welcome p {
+            color: #546e7a;
+            font-size: 16px;
+        }
+
+        /* Cảnh báo quảng cáo */
+        .ad-warning {
+            background: #fff3e0;
+            border: 1px solid #ffb74d;
+            border-radius: 12px;
+            padding: 14px 18px;
+            margin-bottom: 30px;
+            font-size: 14px;
+            color: #e65100;
+            line-height: 1.5;
+            text-align: center;
+        }
+
+        .ad-warning strong {
+            color: #bf360c;
+        }
+
+        .ad-warning a {
+            color: #1565c0;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .ad-warning a:hover {
+            text-decoration: underline;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 28px;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 20px;
+            padding: 40px 30px;
+            text-align: center;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(21, 101, 192, 0.12);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: linear-gradient(90deg, #1976d2, #42a5f5);
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(21, 101, 192, 0.2);
+            border-color: #90caf9;
+        }
+
+        .card h2 {
+            font-size: 26px;
+            color: #0d47a1;
+            margin-bottom: 12px;
+        }
+
+        .card p {
+            color: #607d8b;
+            font-size: 15px;
+        }
+
+        .card .icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        @media (max-width: 600px) {
+            .welcome h1 { font-size: 22px; }
+            .card { padding: 30px 20px; }
+            .card h2 { font-size: 22px; }
+            .role-badge { font-size: 12px; padding: 5px 10px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ========== MÀN HÌNH ĐĂNG NHẬP ========== -->
+    <div id="loginScreen">
+        <div class="login-box">
+            <h2>PRO PROJECT</h2>
+            <p>Vui lòng đăng nhập để tiếp tục</p>
+            <input type="text" id="username" placeholder="Tài khoản" autocomplete="off">
+            <input type="password" id="password" placeholder="Mật khẩu">
+            <button onclick="handleLogin()">Đăng nhập</button>
+            <div class="error-msg" id="errorMsg">Sai tài khoản hoặc mật khẩu!</div>
+        </div>
+    </div>
+
+    <!-- ========== HEADER ========== -->
+    <header id="mainHeader">
+        <div class="logo-area">
+            <div class="pro-badge">PRO</div>
+            <div class="project-text">PROJECT</div>
+        </div>
+
+        <div class="header-right">
+            <div class="role-badge" id="roleBadge"></div>
+
+            <div class="menu-wrapper">
+                <button class="hamburger" id="hamburgerBtn">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <div class="dropdown" id="dropdownMenu">
+                    <button onclick="goToLink('https://dash.unlockffbeta.com/')">Penal Astutech</button>
+                    <button onclick="goToLink('https://ffkipas.my.id/penal/')">Penal Kipas</button>
+                    <button class="logout-btn" onclick="logout()">Đăng xuất</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ========== NỘI DUNG CHÍNH ========== -->
+    <div id="mainContent">
+        <div class="container" id="homePage">
+            <div class="welcome">
+                <h1>Chọn nền tảng</h1>
+                <p>Nhấn vào một trong hai ô bên dưới để tiếp tục</p>
+            </div>
+
+            <!-- CẢNH BÁO QUẢNG CÁO -->
+            <div class="ad-warning">
+                <strong>Lưu ý:</strong> Hai trang Astutech và Kipas có khá nhiều quảng cáo.<br>
+                Để chặn quảng cáo hiệu quả, hãy cài 
+                <a href="https://ublockorigin.com/" target="_blank">uBlock Origin</a> 
+                hoặc 
+                <a href="https://adguard.com/" target="_blank">AdGuard</a> 
+                trước khi truy cập.
+            </div>
+
+            <div class="cards">
+                <div class="card" onclick="goToLink('https://unlockffbeta.com/')">
+                    <div class="icon">🚀</div>
+                    <h2>Astutech</h2>
+                    <p>Truy cập vào Astutech</p>
+                </div>
+                <div class="card" onclick="goToLink('https://ffkipas.my.id')">
+                    <div class="icon">🌀</div>
+                    <h2>Kipas</h2>
+                    <p>Truy cập vào Kipas</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===================== DANH SÁCH TÀI KHOẢN =====================
+        const accounts = [
+            // FREE
+            { user: "free01", pass: "free01", role: "free" },
+            { user: "free02", pass: "free02", role: "free" },
+            { user: "free03", pass: "free03", role: "free" },
+            { user: "free04", pass: "free04", role: "free" },
+            { user: "free05", pass: "free05", role: "free" },
+            { user: "free06", pass: "free06", role: "free" },
+            { user: "free07", pass: "free07", role: "free" },
+            { user: "free08", pass: "free08", role: "free" },
+            { user: "free09", pass: "free09", role: "free" },
+            { user: "free10", pass: "free10", role: "free" },
+
+            // ADMIN (random)
+            { user: "kx7m9p2q", pass: "R4t#8vLp", role: "admin" },
+            { user: "n3w8j5k1", pass: "M9x@2qWz", role: "admin" },
+            { user: "p6t2h9v4", pass: "B7k#5nYr", role: "admin" },
+            { user: "q8r1s6d3", pass: "F2p@9mXc", role: "admin" },
+            { user: "a4z7c2e9", pass: "H6v#3tJk", role: "admin" },
+            { user: "b9y5u1i8", pass: "L4n@7wQs", role: "admin" },
+            { user: "c3x6o4g2", pass: "P8m#1rTd", role: "admin" },
+            { user: "d7v9k5m1", pass: "S5j@6yHf", role: "admin" },
+            { user: "e2w8n3p7", pass: "U9c#4bVz", role: "admin" },
+            { user: "f5u1q6s4", pass: "X3g@8kLp", role: "admin" },
+            { user: "g9t4r2h8", pass: "Z7d#2nWm", role: "admin" },
+            { user: "h6s7y3j9", pass: "A1f@5qEr", role: "admin" },
+            { user: "i1r5t8k2", pass: "C6h#9vTy", role: "admin" },
+            { user: "j4q9u6l3", pass: "E8b@3mXk", role: "admin" },
+            { user: "k8p2v7m5", pass: "G2n#7pWs", role: "admin" },
+            { user: "l3o6w1n9", pass: "I5r@4jQd", role: "admin" },
+            { user: "m7n9x4p2", pass: "K9t#6yHf", role: "admin" },
+            { user: "n2m5y8q6", pass: "M3v@1cLz", role: "admin" },
+            { user: "o5l1z3r7", pass: "O7x#8bNp", role: "admin" },
+            { user: "p9k4a6s1", pass: "Q4g@2mWr", role: "admin" },
+            { user: "q6j8b2t5", pass: "S1h#5kYd", role: "admin" },
+            { user: "r1i3c7u9", pass: "U8j@9pTf", role: "admin" },
+            { user: "s4h7d9v2", pass: "W6k#3nXv", role: "admin" },
+            { user: "t8g2e5w6", pass: "Y2m@7rQs", role: "admin" },
+            { user: "u3f6f1x4", pass: "A9p#4tJk", role: "admin" },
+            { user: "v7e9g8y3", pass: "C5q@6wLm", role: "admin" },
+            { user: "w2d1h4z7", pass: "E1r#8vNp", role: "admin" },
+            { user: "x5c8i9a2", pass: "G7s@3xYd", role: "admin" },
+            { user: "y9b3j6b5", pass: "I4t#9mHk", role: "admin" },
+            { user: "z6a7k2c8", pass: "K8u@1pWz", role: "admin" },
+
+            // ONLY ADMIN (random)
+            { user: "oa_x9k2m7", pass: "Only#9xK2", role: "onlyadmin" },
+            { user: "oa_p4n8v3", pass: "Only@4pN8", role: "onlyadmin" },
+            { user: "oa_r6t1q5", pass: "Only#6rT1", role: "onlyadmin" },
+            { user: "oa_w2h9s7", pass: "Only@2wH9", role: "onlyadmin" },
+            { user: "oa_j5y3z8", pass: "Only#5jY3", role: "onlyadmin" }
+        ];
+
+        // ===================== HÀM HỖ TRỢ =====================
+        function getDeviceId() {
+            let id = localStorage.getItem("device_id");
+            if (!id) {
+                id = "dev_" + Math.random().toString(36).substr(2, 12) + Date.now();
+                localStorage.setItem("device_id", id);
+            }
+            return id;
+        }
+
+        function checkDeviceLock(username) {
+            const key = "lock_" + username;
+            const lockedDevice = localStorage.getItem(key);
+            const currentDevice = getDeviceId();
+
+            if (!lockedDevice) {
+                localStorage.setItem(key, currentDevice);
+                return true;
+            }
+            return lockedDevice === currentDevice;
+        }
+
+        // ===================== ĐĂNG NHẬP =====================
+        function handleLogin() {
+            const user = document.getElementById("username").value.trim();
+            const pass = document.getElementById("password").value.trim();
+            const errorMsg = document.getElementById("errorMsg");
+
+            const account = accounts.find(a => a.user === user && a.pass === pass);
+
+            if (!account) {
+                errorMsg.style.display = "block";
+                errorMsg.innerText = "Sai tài khoản hoặc mật khẩu!";
+                return;
+            }
+
+            if (account.role === "admin" || account.role === "onlyadmin") {
+                if (!checkDeviceLock(account.user)) {
+                    errorMsg.style.display = "block";
+                    errorMsg.innerText = "Tài khoản này đã được đăng nhập trên thiết bị khác!";
+                    return;
+                }
+            }
+
+            localStorage.setItem("loggedIn", "true");
+            localStorage.setItem("currentUser", account.user);
+            localStorage.setItem("currentRole", account.role);
+
+            showMainApp(account.role);
+        }
+
+        function showMainApp(role) {
+            document.getElementById("loginScreen").style.display = "none";
+            document.getElementById("mainHeader").style.display = "flex";
+            document.getElementById("mainContent").style.display = "block";
+
+            const badge = document.getElementById("roleBadge");
+            badge.style.display = "inline-block";
+
+            if (role === "free") {
+                badge.innerText = "Free";
+                badge.className = "role-badge role-free";
+            } else if (role === "admin") {
+                badge.innerText = "Admin";
+                badge.className = "role-badge role-admin";
+            } else if (role === "onlyadmin") {
+                badge.innerText = "Only Admin";
+                badge.className = "role-badge role-onlyadmin";
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem("loggedIn");
+            localStorage.removeItem("currentUser");
+            localStorage.removeItem("currentRole");
+            location.reload();
+        }
+
+        // ===================== CHUYỂN THẲNG SANG LINK =====================
+        function goToLink(url) {
+            window.location.href = url;
+        }
+
+        // ===================== KIỂM TRA ĐÃ ĐĂNG NHẬP =====================
+        window.onload = function () {
+            if (localStorage.getItem("loggedIn") === "true") {
+                const role = localStorage.getItem("currentRole");
+                showMainApp(role);
+            }
+        };
+
+        // ===================== MENU =====================
+        const hamburgerBtn = document.getElementById('hamburgerBtn');
+        const dropdownMenu = document.getElementById('dropdownMenu');
+
+        hamburgerBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            dropdownMenu.classList.toggle('show');
+        });
+
+        document.addEventListener('click', () => {
+            dropdownMenu.classList.remove('show');
+        });
+
+        document.getElementById("password").addEventListener("keypress", function(e) {
+            if (e.key === "Enter") handleLogin();
+        });
+    </script>
+</body>
+</html>
